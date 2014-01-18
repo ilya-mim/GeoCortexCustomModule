@@ -1,0 +1,85 @@
+﻿<Grid xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006">
+      
+    <Grid Name="FrameWork" Margin="0,-40,0,0" HorizontalAlignment="Center" VerticalAlignment="Center">
+    	
+        <Border Background="#FFFFFFFF" CornerRadius="8">
+    	   <Border.Effect>
+               <DropShadowEffect BlurRadius="8" ShadowDepth="1" Opacity="0.75"/>
+    	   </Border.Effect>
+        </Border>
+        
+        <Border CornerRadius="7" Margin="1">
+        	
+           <Border.Background>
+        		<LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+        			<GradientStop Color="#FFEEEEEE" Offset="1"/>
+        			<GradientStop Color="#FFFFFFFF" Offset="0.4"/>
+        			<GradientStop Color="White"/>
+        		</LinearGradientBrush>
+	       </Border.Background>
+           
+           <Grid Margin="8">
+                <Grid.RowDefinitions>
+        	       <RowDefinition Height="Auto"/>
+                   <RowDefinition Height="32"/>
+                   <RowDefinition Height="*"/>
+        	    </Grid.RowDefinitions>
+                
+                <Image x:Name="SplashTitleImage" MinWidth="340" MinHeight="50" Source="Resources/Images/SplashTitle.png" Stretch="None" HorizontalAlignment="Center" Margin="15">
+                    <Image.Triggers>
+                        <EventTrigger RoutedEvent="Image.Loaded">
+                            <BeginStoryboard>
+                                <Storyboard>
+                            	   <DoubleAnimation Duration="0" From="0" To="1" Storyboard.TargetProperty="Opacity" Storyboard.TargetName="SplashTitleImage"/>
+                                </Storyboard>    
+                            </BeginStoryboard>
+                        </EventTrigger>
+                    </Image.Triggers>
+                </Image>
+                           
+                <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center">
+            	    
+                    <Grid x:Name="ImageContainer" HorizontalAlignment="Left" RenderTransformOrigin="0.5,0.5" Width="32" Height="32" Margin="0,0,8,0" Visibility="Collapsed">
+                        <Grid.Triggers>
+                            <EventTrigger RoutedEvent="Grid.Loaded">
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                    	<DoubleAnimation RepeatBehavior="Forever" Duration="0:0:0.5" To="360" Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.Rotation)" Storyboard.TargetName="ImageContainer"/>	
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </EventTrigger>
+                        </Grid.Triggers>
+                        <Grid.RenderTransform>
+                            <CompositeTransform/>
+                        </Grid.RenderTransform>
+                        <Image x:Name="LoaderImage" Source="Resources/Images/Loader.png" Width="32" Height="32" Margin="0,0,8,0">
+                            <Image.Triggers>
+                                <EventTrigger RoutedEvent="Image.Loaded">
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                    	   <DoubleAnimation Duration="0:0:2" From="0" To="1" Storyboard.TargetProperty="Opacity" Storyboard.TargetName="LoaderImage"/>
+                                        </Storyboard>    
+                                    </BeginStoryboard>
+                                </EventTrigger>
+                            </Image.Triggers>
+                        </Image>
+        			</Grid>
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                        <TextBlock Name="progress" Text="Initializing Components. Please Wait..." FontFamily="Arial" FontSize="14" Foreground="#FF666666"/>
+                    </StackPanel>
+                </StackPanel>
+                <TextBlock Grid.Row="2" Margin="0,20,0,0" MaxWidth="300" HorizontalAlignment="Center" VerticalAlignment="Bottom" FontFamily="Arial" FontSize="10" Foreground="#FF999999" Text="This application uses licensed Geocortex Essentials technology for Esri's ArcGIS Server. All rights reserved." TextWrapping="Wrap" TextAlignment="Center"/>
+            </Grid>
+        </Border>
+        
+        <Border x:Name="InnerGlow" BorderBrush="#FFFFFFFF" BorderThickness="1" CornerRadius="7" Margin="1">
+			<Border.Effect>
+				<BlurEffect Radius="3" />
+		    </Border.Effect>
+        </Border>
+    </Grid>
+
+</Grid>

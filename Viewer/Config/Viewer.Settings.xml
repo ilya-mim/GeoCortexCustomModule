@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Settings DefaultViewerId="Launch">
+  <!--
+      The Geocortex Viewer for Silverlight can retrieve viewer configurations 
+      from your Geocortex Essentials REST Elements installation and include 
+      them in the list displayed on the launch page. To enable this feature:
+      
+      1. Uncomment the RemoteSettings element below and change "localhost" to 
+         the name of the machine that hosts your Essentials installation.
+         
+      2. If you installed a named instance of Essentials, insert 
+         "<INSTANCE_NAME>/" after "Essentials/" in the URI.
+      
+      3. If you did not install Essentials in the default virtual directory, 
+         change the "/Geocortex/Essentials/REST" portion of the URI to the 
+         virtual directory, in which your Essentials installation is located.
+      
+      If you want to retrieve all of your viewer configurations from your 
+      Essentials installation (i.e. you're planning to remove all of the 
+      ViewerConfig elements from the list below) and you want to be able to
+      access the launch page, please note that commenting out or removing the
+      ViewerConfig element with Id "Launch" will remove the launch page.
+  -->
+  <!--<RemoteSettings>
+    <RemoteUri Uri="http://localhost/Geocortex/Essentials/REST/viewerconfigurations/E7A9CE23-E047-4732-B8B7-DEB7F694B696?f=xml"/>
+  </RemoteSettings>-->
+  <ViewerConfigs>
+    <ViewerConfig Id="Launch" Uri="Launch/Viewer.xml" Hidden="true" />
+  </ViewerConfigs>
+</Settings>

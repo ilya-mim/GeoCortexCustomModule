@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Configuration Version="1.0">
+  <Globals xmlns="http://www.geocortex.com/Viewer/Configuration/PreProcessor">
+    <SiteUri>http://sampleserver1.geocortex.com/Geocortex/Essentials/rest/sites/CharlotteBingMaps</SiteUri>
+    <DataFrameOpenByDefault Value="true" />
+  </Globals>
+  <Libraries>
+    <Library Id="CustomModule"
+     Uri="CustomModule.xap"
+     AssemblyName="CustomModule, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"
+     ClassNameTemplate="CustomModule.{_ModuleName}.{_ModuleName}{_Type}" />
+  </Libraries>
+  <Modules>
+    <MyFirstGeocortex LibraryId="CustomModule">
+      <Views>
+        <View Id="MyFirstGeocortexView" Region="DataRegion" />
+      </Views>
+    </MyFirstGeocortex>
+    <MySecondGeocortex LibraryId="CustomModule">
+      <Views>
+        <View Id="MySecondGeocortexView" Region="DataRegion" />
+<!--        <View Id="YourSecondGeocortexView" Region="DataRegion" />-->
+      </Views>
+    </MySecondGeocortex>
+    <MyThirdGeocortex LibraryId="CustomModule">
+      <Views>
+        <View Id="MyThirdGeocortexView" Region="ResultsRegion" />
+      </Views>
+    </MyThirdGeocortex>
+  </Modules>
+</Configuration>

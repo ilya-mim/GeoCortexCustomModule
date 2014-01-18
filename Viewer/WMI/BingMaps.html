@@ -1,0 +1,415 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+    <title>Bing Maps</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <link href="WMI.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="http://serverapi.arcgisonline.com/jsapi/arcgis/?v=2.4"></script>
+    <script type="text/javascript" src="http://ecn.dev.virtualearth.net/mapcontrol/mapcontrol.ashx?v=7.0"></script>
+   
+    <script type="text/javascript">
+        dojo.require("esri.tasks.geometry");
+        dojo.addOnWindowUnload(onUnload);
+        dojo.addOnLoad(onLoad);
+        dojo.connect(window, "onresize", resizeMap);
+
+        var map = null;
+        var bingApiKey = 'AhzUdXgTb9izUBjBFSuRA6nf7st57pSf36MC_a3A0UyWafIGGc_eOfMYuplrLiTR';
+        var silverlightPlugin = null;
+        var isBusy = true;
+        var sync = true;
+        var syncZoom = true;
+        var currentZoom = 10;
+        var liveSync = null;
+        var liveSyncDelayMs = 150;
+        var mouseDownEvent;
+        var mouseUpEvent;
+        var viewChangeEvent;
+        var dragging = false;
+
+        var lastLiveSyncUpdateMs;
+        var thisSpatialReferenceWkid = 4326;
+        var thisSpatialReference = { wkid: thisSpatialReferenceWkid };
+        var geometryServiceUrl = "http://sampleserver1.arcgisonline.com/ArcGIS/rest/services/Geometry/GeometryServer";
+        var viewerUpdaterName = "BingBirdsEye" + new Date().valueOf();
+        var subscriptions = [];
+
+        function onUnload() {
+            if (silverlightPlugin != null && subscriptions != null) {
+                for (var i = 0; i < subscriptions.length; ++i) {
+
+                    try {
+                        var sub = subscriptions[i];
+                        silverlightPlugin.Content.essentialsViewer.UnsubscribeFromEvent(sub.eventName, sub.token);
+                    }
+                    catch (e) {
+
+                        // If we couldn't unsubscribe, it's because the viewer has closed.
+                        silverlightPlugin = null;
+                    }
+                }
+            }
+        }
+
+        function subscribeToEvent(eventName, handler) {
+            var subPair = {};
+
+            subPair["eventName"] = eventName;
+            subPair["token"] = silverlightPlugin.Content.essentialsViewer.SubscribeToEvent(eventName, handler);
+
+            subscriptions.push(subPair);
+        }
+
+        function onLoad() {
+
+            if (!window.opener) {
+                alert("No parent window found. No connection to GVS could be established.");
+            }
+            else {
+
+                silverlightPlugin = window.opener.getSilverlightPlugin();
+
+                if (!silverlightPlugin) {
+                    alert("No Silverlight plugin found in parent viewer. No connection to GVS could be established.");
+                }
+                else {
+
+                    // Subscribing to ViewerPositionUpdatedEvent allows us to receive positional updates from GVS. 
+                    subscribeToEvent("ViewerPositionUpdatedEvent", viewerPositionUpdatedEventHandler);
+                }
+            }
+
+            var options =
+                {
+                    credentials: bingApiKey,
+                    center: new Microsoft.Maps.Location(0, 0),
+                    mapTypeId: Microsoft.Maps.MapTypeId.birdseye,
+                    zoom: currentZoom
+                };
+
+                map = new Microsoft.Maps.Map(document.getElementById('myMap'), options);
+
+
+                mouseDownEvent = Microsoft.Maps.Events.addHandler(map, 'mousedown', function (e) {
+                    handleMapMouseDown(e);
+                });
+
+                mouseUpEvent = Microsoft.Maps.Events.addHandler(map, 'mouseup', function (e) {
+                    handleMapMouseUp(e);
+                });
+
+                if (silverlightPlugin != null) {
+
+                    // Calling BroadcastCurrentViewpoint allows us to set the initial viewpoint position.
+                    silverlightPlugin.Content.essentialsViewer.RunCommand("BroadcastCurrentViewpoint", null);
+                }
+            }
+
+        function handleMapMouseDown(e) {
+
+            dragging = true;
+
+            if (liveSync) {
+
+                viewChangeEvent = Microsoft.Maps.Events.addHandler(map, 'viewchangeend', handleSyncedViewChange);
+
+            }
+        }
+
+        function handleSyncedViewChange(e) {
+
+            if (sync == false) {
+                return;
+            }
+
+            var millis = new Date().getTime();
+
+            if (millis - lastLiveSyncUpdateMs < liveSyncDelayMs) {
+                return;
+            }
+
+
+            var bounds = map.getBounds();
+
+            var x = bounds.center.longitude;
+            var y = bounds.center.latitude;
+
+            var halfWidth = bounds.width / 2;
+            var halfHeight = bounds.height / 2;
+            
+            var extent = { xmin: x - halfWidth, ymin: y - halfHeight,
+                           xmax: x + halfWidth, ymax: y + halfHeight,
+                           spatialReference: thisSpatialReference };
+
+            var position = { x: x, y: y, z: 0 };
+            var direction = { x: 0, y: 1, z: 0 };
+            var spatialReference = thisSpatialReference;
+
+            var viewpoint = {
+                extent: extent,
+                position: position,
+                direction: direction,
+                updaterName: viewerUpdaterName,
+                spatialReference: spatialReference
+            };
+
+            if (silverlightPlugin != null) {
+                try {
+                    silverlightPlugin.Content.essentialsViewer.RunCommand("SetMapViewpoint", viewpoint);
+                }
+                catch (e) {
+                    silverlightPlugin = null;
+                    liveSync = false;
+                }
+            }
+
+            lastLiveSyncUpdateMs = millis;
+        }
+
+        function handleMapMouseUp(e) {
+
+            setTimeout(function () {
+                dragging = false;
+            }, 1500);
+
+            if (liveSync) {
+                Microsoft.Maps.Events.removeHandler(viewChangeEvent);
+            }
+
+            lastLiveSyncUpdateMs = 0;
+            handleSyncedViewChange(e);
+        }
+
+        function viewerPositionUpdatedEventHandler(eventArgs) {
+
+            if (dragging) {
+                return;
+            }
+
+            if (map == null) {
+                return;
+            }
+
+            if (sync == false) {
+                return;
+            }
+
+            var updaterName = eventArgs["Viewpoint"]["UpdaterName"];
+
+            // Ignore updates triggered by us
+            if (updaterName == viewerUpdaterName) {
+                return;
+            }
+
+            var extent = new esri.geometry.Extent(eventArgs["Viewpoint"]["Extent"]);
+            var esriExtent = new esri.geometry.Extent(extent);
+            var esriPoint = esriExtent.getCenter();
+
+            var resolution = eventArgs["CurrentResolution"];
+            currentZoom = syncZoom ? ZoomLevelForResolution(resolution) : currentZoom;
+
+            projectPoint(esriPoint, function (p) {
+
+                if (syncZoom) {
+                    map.setView({ animate: true, zoom: currentZoom, center: new Microsoft.Maps.Location(p.y, p.x) });
+                } else {
+                    map.setView({ animate: true, center: new Microsoft.Maps.Location(p.y, p.x) });
+                }
+            });
+        }
+
+        function projectPoint(point, action) {
+            if (point == null || action == null) {
+                return;
+            }
+
+            if (point.spatialReference == null || point.spatialReference.wkid == thisSpatialReferenceWkid) {
+                // WGS84
+                if (liveSync == null) {
+                    enableLiveSync();
+                }
+                action(point);
+            }
+            else if (point.spatialReference.wkid == 102100 ||
+                point.spatialReference.wkid == 102113 ||
+                point.spatialReference.wkid == 3857) {
+                // Web Mercator
+                if (liveSync == null) {
+                    enableLiveSync();
+                }
+                point = esri.geometry.webMercatorToGeographic(point);
+                action(point);
+            }
+            else {
+                // Other, we need to project using a geometry service
+                var gsvc = new esri.tasks.GeometryService(geometryServiceUrl);
+                var outSR = new esri.SpatialReference({ wkid: thisSpatialReferenceWkid });
+                gsvc.project(
+					[point],
+					outSR,
+					function (features) {
+					    var projected = features[0];
+					    action(projected);
+					},
+					function (error) {
+					    alert("Unable to project: " + point + " into SRID " + spatialReferenceWkid + "\n" + error.message);
+					});
+            }
+        }
+
+        function enableLiveSync() {
+ 
+            liveSync = true;
+            lastUpdateMs = new Date().getMilliseconds();
+            subscribeToEvent("MapExtentChangingEvent", mapExtentChangingHandler);
+        }
+
+        function mapExtentChangingHandler(eventArgs) {
+
+            if (dragging == true || sync == false) {
+                return;
+            }
+  
+            var millis = new Date().getTime();
+
+            if (millis - lastLiveSyncUpdateMs < liveSyncDelayMs) {
+                return;
+            }
+
+            var extent = new esri.geometry.Extent(eventArgs["NewExtent"]);
+            var esriExtent = new esri.geometry.Extent(extent);
+            var esriPoint = esriExtent.getCenter();
+
+            var resolution = eventArgs["CurrentResolution"];
+            currentZoom = syncZoom ? ZoomLevelForResolution(resolution) : currentZoom;
+
+            projectPoint(esriPoint, function (p) {
+
+                if (syncZoom) {
+                    map.setView({ animate: true, zoom: currentZoom, center: new Microsoft.Maps.Location(p.y, p.x) });
+                }
+                else {
+                    map.setView({ animate: true, center: new Microsoft.Maps.Location(p.y, p.x) });
+                }
+            });
+
+            lastLiveSyncUpdateMs = millis;
+        }
+   
+        function resizeMap() {
+        }
+
+        // TODO: Refactor
+        function ZoomLevelForResolution(res) {
+            if (res <= 0.30) {
+                return 19;
+            }
+            if (res <= 0.60) {
+                return 18;
+            }
+            if (res <= 1.19) {
+                return 17;
+            }
+            if (res <= 2.39) {
+                return 16;
+            }
+            if (res <= 4.78) {
+                return 15;
+            }
+            if (res <= 9.55) {
+                return 14;
+            }
+            if (res <= 19.11) {
+                return 13;
+            }
+            if (res <= 38.22) {
+                return 12;
+            }
+            if (res <= 76.44) {
+                return 11;
+            }
+            if (res <= 152.87) {
+                return 10;
+            }
+            if (res <= 305.75) {
+                return 9;
+            }
+            if (res <= 611.50) {
+                return 8;
+            }
+            if (res <= 1222.99) {
+                return 7;
+            }
+            if (res <= 2445.98) {
+                return 6;
+            }
+            if (res <= 4891.97) {
+                return 5;
+            }
+            if (res <= 9783.94) {
+                return 4;
+            }
+            if (res <= 19567.88) {
+                return 3;
+            }
+            if (res <= 39135.76) {
+                return 2;
+            }
+            if (res <= 78271.52) {
+                return 1;
+            }
+        }
+    </script>
+</head>
+<body>
+    <script type="text/javascript">
+        function click_sync() {
+
+            var val = dojo.byId('syncCheckBox');
+
+            sync = val.checked;
+
+            if (sync) {
+
+                dojo.byId('syncZoomCheckBox').disabled = false;
+
+                // Live sync will be reset if applicable when the resulting position update event is handled
+                liveSync = false;
+
+                silverlightPlugin.Content.essentialsViewer.RunCommand("BroadcastCurrentViewpoint", null);
+            }
+            else {
+
+                dojo.byId('syncZoomCheckBox').disabled = true;
+            }
+
+            return false;
+        }
+
+        function click_syncZoom() {
+
+            syncZoom = dojo.byId('syncZoomCheckBox').checked;
+
+            if (syncZoom) {
+                silverlightPlugin.Content.essentialsViewer.RunCommand("BroadcastCurrentViewpoint", null);
+            }
+            
+            return false;
+        }
+    </script>
+    <div id="header">
+        <div id="pageTitle">Geocortex Viewer for Bing™ Maps</div>
+        <div id="tools">
+            <div class="tool">
+                <input type="checkbox" id="syncCheckBox" checked="checked" onclick="click_sync()"  />
+                <label for="syncCheckBox">Synchronize</label>
+            </div>
+            <div class="tool">
+                <input type="checkbox" id="syncZoomCheckBox" checked="checked" onclick="click_syncZoom()"  />
+                <label for="syncZoomCheckBox">Sync GVS zoom level</label>
+            </div>
+        </div>
+    </div>
+    <div id="myMap" style="position: relative; width: 100%; height: 100%;">Loading...</div>
+</body>
+</html>

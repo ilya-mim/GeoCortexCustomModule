@@ -1,0 +1,112 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" >
+
+<head>
+    <title>Geocortex Viewer for Silverlight</title>
+    <link href="SplashScreen.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="Silverlight.js"></script>
+    <script type="text/javascript">
+        var silverlightPlugin = null;
+
+        function onSilverlightPluginLoaded(sender, args) {
+            silverlightPlugin = sender.getHost();
+        }
+
+        function getSilverlightPlugin() {
+            return silverlightPlugin;
+        }
+
+        // This function will be called by the JavaScript viewer module once the viewer is loaded.
+        // Functionality can then be invoked on the viewer, such as calling named commands.
+        function onViewerLoaded(plugin) {
+
+            // running a command uses the following syntax
+            // plugin.Content.essentialsViewer.RunCommand("StepZoomIn", null);
+
+            // subscribing to an event uses the following syntax
+            silverlightPlugin.Content.essentialsViewer.SubscribeToEvent("MapExtentChangedEvent", mapExtentChangedEventHandler);
+        }
+
+        function mapExtentChangedEventHandler(eventArgs) {
+            // event specific handling code 
+        }
+
+
+        // See http://forums.arcgis.com/threads/16890-Unhandled-exception-in-Google-Chrome for info.
+        if (navigator.userAgent.toLowerCase().indexOf('chrome') > -1) {
+            console = {};
+            console.log = function () { };
+            console.warn = function () { };
+            console.error = function () { };
+            console.info = function () { };
+        }
+
+        function onSilverlightError(sender, args) {
+            var appSource = "";
+            if (sender != null && sender != 0) {
+                appSource = sender.getHost().Source;
+            }
+
+            var errorType = args.ErrorType;
+            var iErrorCode = args.ErrorCode;
+
+            if (errorType == "ImageError" || errorType == "MediaError") {
+                return;
+            }
+
+            var errMsg = "Unhandled Error in Silverlight Application " + appSource + "\n";
+
+            errMsg += "Code: " + iErrorCode + "    \n";
+            errMsg += "Category: " + errorType + "       \n";
+            errMsg += "Message: " + args.ErrorMessage + "     \n";
+
+            if (errorType == "ParserError") {
+                errMsg += "File: " + args.xamlFile + "     \n";
+                errMsg += "Line: " + args.lineNumber + "     \n";
+                errMsg += "Position: " + args.charPosition + "     \n";
+            }
+            else if (errorType == "RuntimeError") {
+                if (args.lineNumber != 0) {
+                    errMsg += "Line: " + args.lineNumber + "     \n";
+                    errMsg += "Position: " + args.charPosition + "     \n";
+                }
+                errMsg += "MethodName: " + args.methodName + "     \n";
+            }
+
+            throw new Error(errMsg);
+        }
+
+        function onSourceDownloadProgressChanged(sender, eventArgs) {
+            sender.findName("progress").Text = Math.round(eventArgs.progress * 100) + "% Complete";
+
+            if ((eventArgs.progress * 100) >= 0) {
+                sender.findName("ImageContainer").Visibility = "Visible";
+            }
+        }
+
+    </script>
+    
+    
+</head>
+<body>
+    <form id="form1" runat="server" style="height:100%; width: 100%;">
+        <div id="silverlightControlHost">
+            <object data="data:application/x-silverlight-2," type="application/x-silverlight-2" width="100%" height="100%">
+              <param name="source" value="ClientBin/Geocortex.EssentialsSilverlightViewer.Viewer.xap"/>
+              <param name="splashscreensource" value="ClientBin/SplashScreen.xaml"/>
+              <param name="onSourceDownloadProgressChanged" value="onSourceDownloadProgressChanged" />
+              <param name="onError" value="onSilverlightError" />
+              <param name="onLoad" value="onSilverlightPluginLoaded" />
+              <param name="background" value="white" />
+              <param name="minRuntimeVersion" value="4.0.50401.0" />
+              <param name="autoUpgrade" value="true" />
+              <param name="Windowless" value="false" />
+              <a href="http://go.microsoft.com/fwlink/?LinkID=149156&v=4.0.50401.0" style="text-decoration:none">
+                <img src="http://go.microsoft.com/fwlink/?LinkId=161376" alt="Get Microsoft Silverlight" style="border-style:none"/>
+              </a>
+    	    </object>
+            <iframe id="_sl_historyFrame" style="visibility:hidden;height:0px;width:0px;border:0px"></iframe>
+        </div>
+    </form>
+</body>
+</html>

@@ -1,0 +1,762 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<!--
+This file contains configuration in XML format that will be read by the Geocortex Viewer for Silverlight.
+-->
+
+
+<Configuration Version="1.5">
+  <!--
+  The <Globals> section defines a collection of string values associated to unique ID's that can be used as replacement
+  values anywhere else in the configuration file.  A simple string substitution is performed on this configuration file 
+  as well as any other configuration files in the inheritance tree.  These string values can be overridden in a child
+  configuration file.
+  -->
+  <Globals xmlns="http://www.geocortex.com/Viewer/Configuration/PreProcessor">
+    <SiteUri>
+      <!--http://sampleserver1.geocortex.com/geocortex/essentials/rest/sites/CharlotteArcGISOnline-->
+    </SiteUri>
+    <ApplicationTitle Value="" />
+    <BrowserTitle Value="Geocortex Viewer For Silverlight" />
+    <BannerShow Value="true" />
+    <BannerLeftImageUri Value="/Resources/Images/BackgroundLeft.png" />
+    <BannerRightImageUri Value="" />
+    <BannerBackgroundImageUri Value="/Resources/Images/BackgroundRepeat.png" />
+    <GeometryServiceUri Value="http://sampleserver3.arcgisonline.com/ArcGIS/rest/services/Geometry/GeometryServer" />
+    <ToolbarOpenByDefault Value="false" />
+    <DataFrameOpenByDefault Value="false" />
+    <OverviewMapShow Value="true" />
+    <OverviewMapOpenByDefault Value="false" />
+    <OverviewMapMode Value="dynamic" />
+    <ShellFlowDirection Value="LeftToRight" />
+    <DataFramePosition Value="Left" />
+    <MapTipsEnabled Value="false" />
+    <MeasurementUnitDefault Value="feet" />
+    <MeasurementProjectionWkid Value="" />
+    <MeasurementProjectionUnits Value="" />
+    <MeasurementPredictionEnabled Value="true"/>
+    <MeasurementOverrideUnits Value="" />
+    <OptimizerEnabled Value="false" />
+    <OptimizerUserName Value="DefaultUser" />
+    <OptimizerDataRelayUri Value="http://localhost/Geocortex/Optimizer/Rest/DataRelay/LogData.ashx?f=json" />
+    <ScaleBarShow Value="true" />
+    <ScaleSliderShow Value="true" />
+    <BaseMapControlShow Value="true" />
+    <ProgressIndicatorShow Value="true" />
+    <BufferingProjectionWkid Value="" />
+    <BufferingProjectionWkt Value="" />
+    <BufferingProjectionIsGeographic Value="" />
+    <IdentifyPixelTolerance Value="2" />
+    <IdentifyVisibleLayersOnly Value="true"/>
+    <IdentifyVisibleAtCurrentScaleOnly Value="true"/>
+    <BookmarksShow Value="true"/>
+    <ResultsFrameHeight Value="300"/>
+    <MapContextMenu Value="MapMenu"/>
+    <IWantToMenu Value="IWantTo"/>
+    <CoordinateSystems>
+      <CoordinateSystem DisplayName="Web Mercator" WKID="102100" NumDigits="6" DisplayAsDMS="false" DisplayAsLatLon="false" />
+      <CoordinateSystem DisplayName="Lat/Lon (DD)" WKID="4326" NumDigits="4" DisplayAsDMS="false" DisplayAsLatLon="true" Default="true" />
+      <CoordinateSystem DisplayName="Lat/Lon (DMS)" WKID="4326" NumDigits="4" DisplayAsDMS="true" DisplayAsLatLon="false" />
+    </CoordinateSystems>
+    <ProjectCategory Value="Common" />
+    <MouseCoordinatesShow Value="true" />
+    <OverviewMapExtentScaleFactor Value="2.0" />
+    <UseInstantSearch Value="false" />
+    <UseLayerSearch Value="true" />
+    <LayerThemesOnBaseMapControl Value="true"/>
+  </Globals>
+  <!--
+  The <Libraries> section defines all information necessary for the viewer to locate and load binary modules at runtime.
+  -->
+  <Libraries Default="Core">
+    <Library Id="Core"
+         Uri="Geocortex.EssentialsSilverlightViewer.CoreModules.xap"
+         AssemblyName="Geocortex.EssentialsSilverlightViewer.CoreModules, Version={_Version}, Culture=neutral, PublicKeyToken=2279c6c155d3316f"
+         ClassNameTemplate="Geocortex.EssentialsSilverlightViewer.CoreModules.{_ModuleName}.{_ModuleName}{_Type}" />
+  </Libraries>
+
+  <!-- 
+  The <Resources> section contains <Xaml> child elements that either reference a Xaml ResourceDictionary available at
+  a Uri, or defines the ResourceDictionary inline.
+  -->
+  <!--
+  <Resources>
+    <Xaml Uri="../Config/Themes/Sample.xaml" />
+    <Xaml>
+      <ResourceDictionary
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:System="clr-namespace:System;assembly=mscorlib">
+         <System:Double x:Key="AppFontSize">10</System:Double>
+         <SolidColorBrush x:Key="AppBackground">#FF000000</SolidColorBrush>
+      </ResourceDictionary>
+    </Xaml>
+  </Resources>
+  -->
+
+  <!--
+  The <Modules> section is the parent element that contains configuration for each individual module loaded into
+  the viewer.
+  -->
+  <Modules>
+    <AdvancedMapControls>
+      <Views>
+        <View Region="AdvancedControlsRegion"/>
+      </Views>
+      <Configuration />
+    </AdvancedMapControls>
+
+    <AuthenticationDialog>
+      <Configuration />
+    </AuthenticationDialog>
+
+    <Banner>
+      <Views>
+        <View Region="HeaderRegion" Visible="{BannerShow}" />
+      </Views>
+      <Configuration ApplicationTitle="{ApplicationTitle}" TitleColor="#FFFFFF" BrowserTitle="{BrowserTitle}" ImageUri="{BannerBackgroundImageUri}" RepeatX="true">
+        <LeftImage ImageUri="{BannerLeftImageUri}" Opacity="1"/>
+        <RightImage ImageUri="{BannerRightImageUri}" Opacity="1"/>
+      </Configuration>
+    </Banner>
+
+    <BaseMapControl>
+      <Views>
+        <View Region="TopRightMapRegion" Visible="{BaseMapControlShow}" AssociatedHelpTopicKey="BaseMaps">
+          <Configuration ShowLayerThemes="{LayerThemesOnBaseMapControl}" />
+        </View>
+      </Views>
+    </BaseMapControl>
+    
+    <Bookmarks>
+      <Views>
+        <View Id="BookmarksView" Region="BookmarksRegion" Visible="{BookmarksShow}" />
+      </Views>
+    </Bookmarks>
+
+    <Callouts>
+      <Configuration></Configuration>
+    </Callouts>
+
+    <CoordinateTool>
+      <Views>
+        <View Region="CoordinateToolsRegion" Type="Geocortex.EssentialsSilverlightViewer.CoreModules.CoordinateTool.CoordinateToolView" />
+        <View Id="CustomCoordinateView" Region="ModalWindowRegion" Type="Geocortex.EssentialsSilverlightViewer.CoreModules.CoordinateTool.CustomCoordinateView" Visible="false" />
+        <View Id="MouseCoordinatesView" Region="CoordinatesRegion" Type="Geocortex.EssentialsSilverlightViewer.CoreModules.CoordinateTool.CoordinatesView" Visible="{MouseCoordinatesShow}" />
+      </Views>
+      <Configuration GeometryServiceUri="{GeometryServiceUri}" MouseCoordDigits="3">
+        <CoordinateSystems>
+          {CoordinateSystems}
+        </CoordinateSystems>
+      </Configuration>
+    </CoordinateTool>
+
+    <ExportMap>
+      <Views>
+        <View Id="ExportMapView" Visible="false" Region="ModalWindowRegion" />
+      </Views>
+    </ExportMap>
+
+    <FeatureActions>
+      <Configuration GeometryServiceUri="{GeometryServiceUri}">
+
+      </Configuration>
+    </FeatureActions>
+
+    <Geocoding>
+      <Views>
+        <View Region="DataRegion" Id="ForwardGeocodingView" Visible="false" />
+      </Views>
+      <Configuration Title="Advanced Address Search (Geocoding)" TitleWithResult="Advanced Address Search - 1 Result" TitleWithResults="Advanced Address Search - {0} Results"
+                     GeometryServiceUri="{GeometryServiceUri}">
+        <GeocodingEndpoints />
+      </Configuration>
+    </Geocoding>
+    
+    <GeoRss>
+      <Configuration GeometryServiceUri="{GeometryServiceUri}">
+      </Configuration>
+    </GeoRss>
+
+    <GlobalSearch>
+      <Views>
+        <View Region="InnerBannerContent" AssociatedHelpTopicKey="GlobalSearch"/>
+      </Views>
+      <Configuration />
+    </GlobalSearch>
+
+    <Help>
+      <Configuration UseF1Key="true">
+        <Topics>
+          <UriTopic Key="" Uri="./../Help/Default.htm" />
+          <UriTopic Key="LayerList" Uri="./../Help/Default.htm#Client_APIs/SV_User/SVU_AboutLayers.htm" />
+          <UriTopic Key="Toolbar" Uri="./../Help/Default.htm#Client_APIs/SV_User/SVU_Toolbar.htm" />
+          <UriTopic Key="OverviewMap" Uri="./../Help/Default_.htm#Client_APIs/SV_User/SV_AboutTheOverviewMap.htm" />
+          <UriTopic Key="GlobalSearch" Uri="./../Help/Default.htm#Client_APIs/SV_User/SVU_About%20Search.htm" />
+          <UriTopic Key="Reporting" Uri="./../Help/Default.htm#Client_APIs/SV_User/SVU_AboutReports.htm" />
+          <UriTopic Key="BaseMaps" Uri="./../Help/Default.htm#Client_APIs/SV_User/SVU_AboutBaseMaps.htm" />
+          <UriTopic Key="MapFeatures" Uri="./../Help/Default.htm#Client_APIs/SV_User/SVU_AboutMapFeatures.htm" />
+          <!-- example of how to run an arbitrary command for a help topic
+          <RunCommandTopic Key="IWantTo" Command="OpenWebPage" CommandParameter="./../Help/IWantTo.html"/>
+          -->
+          {Insert__Help-Topics}
+        </Topics>
+      </Configuration>
+    </Help>
+    
+    <Identify>
+      <Views>
+        <View Region="IdentifyRegion">
+          <Configuration>
+            <Point />
+            <Freehand />
+            <Polyline />
+            <Polygon />
+            <Rectangle />
+          </Configuration>
+        </View>
+      </Views>
+      <Configuration>
+        <IdentifyOptions PixelTolerance="{IdentifyPixelTolerance}" VisibleLayersOnly="{IdentifyVisibleLayersOnly}" VisibleAtCurrentScaleOnly="{IdentifyVisibleAtCurrentScaleOnly}" />
+        <BufferingOptions WKID="{BufferingProjectionWkid}" WKT="{BufferingProjectionWkt}" IsGeographic="{BufferingProjectionIsGeographic}" />
+      </Configuration>
+    </Identify>
+
+    <InstantSearch>
+      <Configuration IncludeInGlobalSearch="{UseInstantSearch}" MaxResults="50" />
+    </InstantSearch>
+    
+    <IWantToMenu>
+      <Views>
+        <View Region="TopLeftMapRegion" Type="Geocortex.EssentialsSilverlightViewer.CoreModules.IWantToMenu.MenuFloatingView" />
+      </Views>
+      <Configuration>
+        <MenuRef MenuId="{IWantToMenu}"/>
+        <Menus>
+          <Menu Id="{IWantToMenu}" Title="I want to...">
+            <Items>
+              <Item Text="Create a printable map" Command="PrintMap" ImageUri="/Resources/Images/Print.png" Description="Create a printable map." />
+              <Item Text="Create a report" Command="RunReport" ImageUri="/Resources/Images/Reports.png" Description="Run a report." />
+              <Item Text="Draw on the map" ImageUri="/Resources/Images/MarkupFreehand.png" Description="Draw freehand on the map surface." >
+                <Batch>
+                  <BatchItem Command="ShowAdvancedTools" />
+                  <BatchItem Command="SetCurrentTab" CommandParameter="Tasks" />
+                  <BatchItem Command="ActivateTool" CommandParameter="MarkupFreehand" />
+                </Batch>
+              </Item>
+              <Item Text="Measure distance" ImageUri="/Resources/Images/MeasureDistance.png" Description="Measure length using a polyline tool." >
+                <Batch>
+                  <BatchItem Command="ShowAdvancedTools" />
+                  <BatchItem Command="SetCurrentTab" CommandParameter="Analysis"/>
+                  <BatchItem Command="ActivateTool" CommandParameter="MeasureDistance" />
+                </Batch>
+              </Item>
+              <Item Text="Share current map" ImageUri="/Resources/Images/Share-Map.png"  Command="CaptureViewerState" Description="Share your current view of the map with someone." />
+              <Item Text="Return to initial map extent" ImageUri="/Resources/Images/ZoomInitial.png" Command="ZoomToInitialExtent" Description="Zoom to the intial extent of the map." />
+              <Item Text="Turn map data on/off" ImageUri="/Resources/Images/Layers.png" Description="Open the layer list to modify layer visibilities." >
+                <Batch>
+                  <BatchItem Command="SwitchToLayerView" />
+                  <BatchItem Command="OpenDataFrame" />
+                </Batch>
+              </Item>
+              <Item Text="Add Map Layer" Command="AddMapLayerInteractive" ImageUri="/Resources/Images/LayersAdd.png" Description="Add External Map Layer." />
+              <Item Text="Show/hide advanced toolbar" Command="ToggleAdvancedTools" ImageUri="/Resources/Images/Tools.png" Description="Toggle the Advanced Toolbar."  />
+              <Item Text="View Results" Command="SwitchToResultsView" ImageUri="/Resources/Images/Search.png" Description="View the most recent search results." />
+              <Item Text="View Selected" Command="SwitchToSelectionView" ImageUri="/Resources/Images/Star32x32.png" Description="View selected features." />
+              {Insert__Menus-IWantTo-Items}
+            </Items>
+          </Menu>
+        </Menus>
+      </Configuration>
+    </IWantToMenu>
+
+    <JavaScript>
+      <Configuration StartupFunction="onViewerLoaded" />
+    </JavaScript>
+
+    <LayerList>
+      <Views>
+        <View Region="DataRegion" Id="LayerListView" Visible="false" AssociatedHelpTopicKey="LayerList">
+          <Configuration>
+            <LayerThemes Visible="true"/>
+            <Filter Location="bottom" />
+            <LayerList ExpandFolders="true" ExpandMapServices="true" ExpandGroupLayers="true" />
+            <Legend VisibleLayersOnly="true" VisibleAtCurrentScaleOnly="true" VisibleWithinCurrentExtentOnly="false" />
+            <LayerTypeIcons>
+              <LayerTypeIcon LayerType="Group" ImageUri="/Geocortex.EssentialsSilverlightViewer.Infrastructure;component/Resources/Images/GroupLayer.png"/>
+              <LayerTypeIcon LayerType="Line" ImageUri="/Geocortex.EssentialsSilverlightViewer.Infrastructure;component/Resources/Images/Line.png"/>
+              <LayerTypeIcon LayerType="Polygon" ImageUri="/Geocortex.EssentialsSilverlightViewer.Infrastructure;component/Resources/Images/Polygon.png"/>
+              <LayerTypeIcon LayerType="Point" ImageUri="/Geocortex.EssentialsSilverlightViewer.Infrastructure;component/Resources/Images/Point.png"/>
+              <LayerTypeIcon LayerType="Graphics" ImageUri="/Geocortex.EssentialsSilverlightViewer.Infrastructure;component/Resources/Images/GraphicsLayer.png"/>
+              <LayerTypeIcon LayerType="None" ImageUri=""/>
+            </LayerTypeIcons>
+            <Menus>
+              <Menu Id="LayerActions" >
+                <Items>
+                  <Item Text="Zoom To Visible Scale">
+                    <Batch>
+                      <BatchItem Command="ZoomToLayerVisible" />
+                      <BatchItem Command="ZoomToEsriLayerVisible" />
+                    </Batch>
+                  </Item>
+                  <Item Text="Zoom To Extent" Command="ZoomToExtent" />
+                  <Item Text="Symbolize Layer" Command="ShowSymbolizeGraphicsLayerDialog" HideWhenDisabled="true"/>
+                  <Item Text="Remove Layer" Command="RemoveEsriLayer" HideWhenDisabled="true"/>
+                  <Item Text="List Items" Command="ListFeatureSet" HideWhenDisabled="true"/>
+                  <Item Text="Update" Command="UpdateLayer" HideWhenDisabled="true"/>
+                </Items>
+              </Menu>
+              <Menu Id="LayerListSelectionActionsMenu" >
+                <Items>
+                  <Item Text="List Features">
+                    <Batch>
+                      <BatchItem Command="SetActiveFeatureSet" />
+                      <BatchItem Command="SwitchToResultsView" />
+                    </Batch>
+                  </Item>
+                  <Item IsSeparator="true" />
+                  <Item Text="Zoom To All" Command="ZoomToAllFeatures" />
+                  <Item Text="Highlight Features" Command="HighlightFSMFeatureSet" HideWhenDisabled="true"/>
+                  <Item Text="Unhighlight Features" Command="UnhighlightFSMFeatureSet" HideWhenDisabled="true"/>
+                  <Item Text="Buffer Features" >
+                    <Batch>
+                      <BatchItem Command="ZoomToAllFeatures" />
+                      <BatchItem Command="IdentifyBufferedFeatureSet" />
+                    </Batch>
+                  </Item>
+                  <Item IsSeparator="true" />
+                  <Item Text="Generate Report" Command="RunFeaturesReport" />
+                  <Item Text="Export To CSV" Command="ExportFeaturesToCsvWithExtras" />
+                  <Item IsSeparator="true" />
+                  <Item Text="Remove From Selected" Command="RemoveFeatureSetFromSelection" HideWhenDisabled="true" />
+                </Items>
+              </Menu>
+            </Menus>
+            <LayerSelectionMenuRef MenuId="LayerListSelectionActionsMenu"/>
+            <DialogSelectionMenuRef MenuId="LayerListSelectionActionsMenu"/>
+          </Configuration>
+        </View>
+      </Views>
+    </LayerList>
+
+    <LayerSearch>
+      <Configuration IncludeInGlobalSearch="{UseLayerSearch}" />
+    </LayerSearch>
+    
+    <Map>
+      <Views>
+        <View Region="MapRegion" />
+      </Views>
+      <Configuration GeometryServiceUri="{GeometryServiceUri}" SnapToLevels="false" PanDuration="0.5" ZoomDuration="0.5" DefaultPointFeatureZoomScales="5000" MinimumResolution="" MaximumResolution="">
+        <Menus>
+          <Menu Id="{MapContextMenu}" >
+            <Items>
+              <Item Text="Center Map Here" Command="PanToPoint" />
+              <Item Text="What's Here" Command="Identify" />
+              <Item Text="Draw a Point" Command="AddMarkup" />
+              <Item Text="Add Some Text" Command="AddTextMarkup" />
+              <Item Text="Export a Map Image" Command="ShowExportMapDialog" />
+              <Item Text="Open Google Street View Here">
+                <Batch>
+                  <BatchItem Command="PanToPoint" />
+                  <BatchItem Command="OpenWebPage" CommandParameter="../WMI/GoogleMaps.html"  />
+                </Batch>
+              </Item>
+            </Items>
+          </Menu>
+        </Menus>
+        <ContextMenuRef MenuId="{MapContextMenu}" />
+      </Configuration>
+    </Map>
+
+    <MapTips>
+      <Views>
+        <View Region="MapTipsRegion" />
+      </Views>
+      <Configuration>
+        <DefaultLayerIcon Source="/Resources/Images/DefaultResult.png" />
+        <MapTips Enabled="{MapTipsEnabled}" PixelTolerance="6" VisibleLayersOnly="true" VisibleAtCurrentScaleOnly="true" RestoreOpenMapTips="true"/>
+        <Menus>
+          <Menu Id="FeatureActions">
+            <Items>
+              <Item Text="Zoom To Feature" ToolTip="Zoom to feature" Command="ZoomToFeature" Module="Map"/>
+              <Item Text="Pan To Feature" ToolTip="Pan to feature" Command="PanToFeature" Module="Map"/>
+              <Item Text="Create A Report" ToolTip="View reports" Command="RunFeatureReport" Module="Reporting"/>
+              <Item Text="Copy Feature" ToolTip="Copy this feature to the drawing layer" Command="AddMarkupFeature" Module="Markup" />
+              <Item Text="Add To Selected" ToolTip="Add this feature to my selection" HideWhenDisabled="true" >
+                <Batch>
+                  <BatchItem Command="AddFeatureToSelection" Module="Selection" AbortBatchOnFailure="true" />
+                </Batch>
+              </Item>
+              <Item Text="Remove From Selected" ToolTip="Remove this feature from my selection" Command="RemoveFeatureFromSelection" Module="Selection" HideWhenDisabled="true"/>
+              <Item Text="Export Feature Attachments" ToolTip="Export feature attachments" Command="ExportFeatureAttachments" Module="FeatureActions" HideWhenDisabled="false"/>              
+            </Items>
+          </Menu>
+        </Menus>
+        <DetailsDialogActionsRef MenuId="FeatureActions" />
+      </Configuration>
+    </MapTips>
+
+    <Markup>
+      <Views>
+        <View Region="DrawingToolsRegion" />
+      </Views>
+      <Configuration>
+        <MarkupLayer Name="Drawings"/>
+      </Configuration>
+    </Markup>
+
+    <Measurement>
+      <Views>
+        <View Region="MeasurementToolsRegion" />
+      </Views>
+      <Configuration GeometryServiceUri="{GeometryServiceUri}">
+        <MeasurementOptions DefaultUnit="{MeasurementUnitDefault}" OverrideUnits="{MeasurementOverrideUnits}" PredictionEnabled="{MeasurementPredictionEnabled}" />
+        <Projection Wkid="{MeasurementProjectionWkid}" ProjectionUnits="{MeasurementProjectionUnits}" />
+      </Configuration>
+    </Measurement>
+
+    <OpenCsv>
+      <Configuration GeometryServiceUri="{GeometryServiceUri}" />
+    </OpenCsv>
+    
+    <OpenShapefile>
+      <Configuration GeometryServiceUri="{GeometryServiceUri}" />
+    </OpenShapefile>
+    
+    <OptimizerIntegration>
+      <Configuration>
+        <Enabled value="{OptimizerEnabled}"/>
+        <OptimizerOptions UserName="{OptimizerUserName}" DataRelayUri="{OptimizerDataRelayUri}"/>
+      </Configuration>
+    </OptimizerIntegration>
+
+    <OverviewMap>
+      <Views>
+        <View Id="OverviewMapView" Region="BottomRightMapRegion" Visible="{OverviewMapShow}" AssociatedHelpTopicKey="OverviewMap"/>
+      </Views>
+      <Configuration>
+        <OpenByDefault Value="{OverviewMapOpenByDefault}" />
+        <ExtentScaleFactor Value="{OverviewMapExtentScaleFactor}" />
+        <Mode Value="{OverviewMapMode}" />
+      </Configuration>
+    </OverviewMap>
+
+    <PrintTemplates>
+      <Views>
+        <View Id="PrintTemplatesView" Visible="false" Region="ModalWindowRegion" />
+      </Views>
+    </PrintTemplates>
+
+    <ProgressIndicator>
+      <Views>
+        <View Id="ProgressIndicatorView" Region="BottomMapRegion" Visible="{ProgressIndicatorShow}" />
+      </Views>
+      <Configuration DefaultLingerMs="750" DefaultTimeoutMs="5000" FadeStepMs="50" FadeTimeMs="750" HeartbeatPeriodMs="560" />
+    </ProgressIndicator>
+
+    <Reporting>
+      <Views>
+        <View Id="ReportingView" Region="DataRegion" AssociatedHelpTopicKey="Reporting" />
+        <View Id="FeaturesReportView" Type="Geocortex.EssentialsSilverlightViewer.CoreModules.Reporting.FeaturesReportView" Visible="false" Region="ModalWindowRegion" />
+      </Views>
+    </Reporting>
+
+    <Results>
+      <Views>
+        <View Id="ResultsView" Visible="true" Region="DataRegion" AssociatedHelpTopicKey="MapFeatures"/>       
+      </Views>
+      <Configuration>
+        <DefaultIcon Source="/Resources/Images/DefaultResult.png" />
+        <Menus>
+          <Menu Id="ResultsListMenu" >
+            <Items>
+              <Item Text="Refine Results" Command="RefineSearchResults" />
+              <Item Text="Hide Results From This Layer" Command="HideFeatureSet" />
+              <Item IsSeparator="true" />
+              <Item Text="Show Feature Details" Command="ShowFeatureDetails" />
+              <Item Text="Add To Selected" Command="AddFeatureToSelection" HideWhenDisabled="true" />
+              <Item Text="Remove From Selected" Command="RemoveFeatureFromSelection" HideWhenDisabled="true" />
+              <Item Text="Add To Selected" Command="AddFeaturesToSelection" HideWhenDisabled="true" />
+              <Item Text="Remove Features from My Selection" Command="RemoveFeaturesFromSelection" HideWhenDisabled="true" />
+              <Item Text="Buffer Feature" Command="IdentifyBufferedFeature" HideWhenDisabled="true" />   
+            </Items>
+          </Menu>
+          <Menu Id="ResultsTableMenu" >
+            <Items>
+              <Item Text="Refine Results" Command="RefineSearchResults" />
+              <Item Text="Hide Results From This Layer" Command="HideFeatureSet" />
+              <Item IsSeparator="true" />
+              <Item Text="Show Feature Details" Command="ShowFeatureDetails" />
+              <Item Text="Add To Selected" Command="AddFeatureToSelection" HideWhenDisabled="true" />
+              <Item Text="Remove from Selected" Command="RemoveFeatureFromSelection" HideWhenDisabled="true" />
+              <Item Text="Add To Selected" Command="AddFeaturesToSelection" HideWhenDisabled="true" />
+              <Item Text="Remove from Selected" Command="RemoveFeaturesFromSelection" HideWhenDisabled="true" />
+              <Item Text="Buffer Feature" Command="IdentifyBufferedFeature" HideWhenDisabled="true" />
+            </Items>
+          </Menu>
+          <Menu Id="ResultsListActions" >
+            <Items>
+              <Item Text="Refine Results" ToolTip="Refine search results" Command="RefineSearchResults" Module="Results"/>
+              <Item Text="Table View" ToolTip="Switch to table view" Command="SwitchToTabularResultsView" Module="Results"/>
+            </Items>
+          </Menu>
+          <Menu Id="ResultsTableActions" >
+            <Items>
+              <Item Text="Refine Results" ToolTip="Refine search results" Command="RefineSearchResults" Module="Results"/>
+              <Item Text="List View" ToolTip="Switch to list view" Command="SwitchToListResultsView" Module="Results"/>
+              <Item Text="Zoom to All" ToolTip="Zoom to all features" Command="ZoomToFeatures" Module="Map"/>
+              <Item Text="Reports" ToolTip="View reports" Command="RunFeaturesReport" Module="Reporting"/>
+              <Item Text="Export to CSV" ToolTip="Export to CSV" Command="ExportFeaturesToCsvWithExtras" Module="FeatureActions"/>
+            </Items>
+          </Menu>
+        </Menus>
+        <ResultsListActionsRef MenuId="ResultsListActions" />
+        <ResultsListMenuRef MenuId="ResultsListMenu" />
+        <ResultsTableActionsRef MenuId="ResultsTableActions" />
+        <ResultsTableMenuRef MenuId="ResultsTableMenu" />
+      </Configuration>
+    </Results>
+
+    <SaveOpenProject>
+      <Views>
+        <View Region="QuickLinks" />
+      </Views>
+      <Configuration ProjectCategory="{ProjectCategory}" Support="Warn" />
+    </SaveOpenProject>
+
+    <ScaleBar>
+      <Views>
+        <View Id="ScaleBarView" Region="BottomLeftMapRegion" Visible="{ScaleBarShow}"/>
+      </Views>
+    </ScaleBar>
+
+    <ScaleSlider>
+      <Views>
+        <View Id="ScaleSliderView" Region="NavigationRegion" Visible="{ScaleSliderShow}" />
+      </Views>
+    </ScaleSlider>
+    
+    <Selection>
+      <Views>
+        <View Id="SelectionView" Visible="true" Region="ResultsSelectionRegion"/>
+        <View Id="HistoryView" Visible="true" Region="ResultsHistoryRegion" Type="Geocortex.EssentialsSilverlightViewer.CoreModules.Selection.HistoryView">
+          <Configuration TimestampFormat="h:mm tt" MaximumSavedSearches="10" />          
+        </View>
+      </Views>
+      <Configuration>
+        <DefaultIcon Source="/Resources/Images/DefaultResult.png" />        
+        <Menus>
+          <Menu Id="SelectionActions" >
+            <Items>
+              <Item Text="Zoom To All" Command="ZoomToAllFeatures" />
+              <!--    <Item Text="Show Search History" Command="ShowSearchHistory" Module="ResultsList" HideWhenDisabled="true"/>
+              <Item Text="Hide Search History" Command="HideSearchHistory" Module="ResultsList" HideWhenDisabled="true"/>        -->
+              <Item Text="Clear Selected" Command="ClearSelection" />
+            </Items>
+          </Menu>
+          <Menu Id="CurrentSelectionMenu" >
+            <Items>
+              <Item Text="Zoom To All" Command="ZoomToAllFeatures" />
+              <Item IsSeparator="true" />
+              <Item Text="Clear Current Selection" Command="ClearSelection" />
+            </Items>
+          </Menu>
+          <Menu Id="SelectionLayerMenu" >
+            <Items>
+              <Item Text="Zoom To All" Command="ZoomToAllFeatures" />
+              <Item Text="Highlight Features" Command="HighlightFSMFeatureSet" HideWhenDisabled="true"/>
+              <Item Text="Unhighlight Features" Command="UnhighlightFSMFeatureSet" HideWhenDisabled="true"/>
+              <Item Text="Buffer Features" >
+                <Batch>
+                  <BatchItem Command="ZoomToAllFeatures" />
+                  <BatchItem Command="IdentifyBufferedFeatureSet" />
+                </Batch>
+              </Item>
+              <Item IsSeparator="true" />
+              <Item Text="Generate Report" Command="RunFeaturesReport" />
+              <Item Text="Export To CSV" Command="ExportFeaturesToCsvWithExtras" />
+              <Item IsSeparator="true" />
+              <Item Text="Remove From Selected" Command="RemoveFeatureSetFromSelection" HideWhenDisabled="true" />
+            </Items>
+          </Menu>
+          <Menu Id="HistoricalResultsRootMenu" >
+            <Items>
+              <Item Text="Zoom To All" Command="ZoomToAllFeatures" />
+              <Item IsSeparator="true" />
+              <Item Text="Add To Selected" Command="AddFeatureSetsToSelection" HideWhenDisabled="true"/>
+              <Item Text="Remove From Selected" Command="RemoveFeatureSetsFromSelection" HideWhenDisabled="true"/>
+              <Item IsSeparator="true" />
+              <Item Text="Remove From Search History" Command="RemoveCollection" />
+            </Items>
+          </Menu>
+          <Menu Id="HistoricalResultsLayerMenu" >
+            <Items>
+              <Item Text="Zoom To All" Command="ZoomToAllFeatures" />
+              <Item Text="Buffer Features" >
+                <Batch>
+                  <BatchItem Command="ZoomToAllFeatures" />
+                  <BatchItem Command="IdentifyBufferedFeatureSet" />
+                </Batch>
+              </Item>
+              <Item IsSeparator="true" />
+              <Item Text="Generate Report" Command="RunFeaturesReport" />
+              <Item Text="Export To CSV" Command="ExportFeaturesToCsvWithExtras" />
+              <Item IsSeparator="true" />
+              <Item Text="Add To Selected" Command="AddFeatureSetToSelection" HideWhenDisabled="true"/>
+              <Item Text="Remove From Selected" Command="RemoveFeatureSetFromSelection" HideWhenDisabled="true"/>
+            </Items>
+          </Menu>
+        </Menus>
+        <ActionBarRef MenuId="SelectionActions"/>        
+        <CurrentSelectionMenuRef MenuId="CurrentSelectionMenu" />
+        <SelectionLayerMenuRef MenuId="SelectionLayerMenu" />
+        <HistoricalResultsRootMenuRef MenuId="HistoricalResultsRootMenu" />
+        <HistoricalResultsLayerMenuRef MenuId="HistoricalResultsLayerMenu" />
+      </Configuration>
+    </Selection>
+
+
+    <Shell>
+      <Configuration>
+        <Shell FlowDirection="{ShellFlowDirection}"
+               ToolbarOpenByDefault="{ToolbarOpenByDefault}"
+               DataFramePosition="{DataFramePosition}"
+               DataFrameOpenByDefault="{DataFrameOpenByDefault}"
+               ResultsFrameHeight="{ResultsFrameHeight}"/>
+      </Configuration>
+    </Shell>
+
+    <Site>
+      <Configuration>
+        <Site Uri="{SiteUri}" InitializationTimeout="90" />
+      </Configuration>
+    </Site>
+
+    <Toolbar>
+      <Views>
+        <View Id="ToolbarView" Region="ToolbarRegion" Visible="false" AssociatedHelpTopicKey="Toolbar"/>
+      </Views>
+      <Configuration>
+        <Toolbar StickyTools="true">
+          <Tab DisplayName="Getting Around">
+            <Group DisplayName="Navigation">
+              <Tool Name="Pan" DisplayName="Pan" DrawMode="None" ImageUri="/Resources/Images/Pan.png" ToolTip="Pan" HelpText="Drag the map around to pan." />
+              <Tool Name="ZoomIn" DisplayName="Zoom In" DrawMode="Rectangle" Command="ZoomInToExtent" ImageUri="/Resources/Images/ZoomIn.png" ToolTip="Zoom in" HelpText="Drag a rectangle or click the map to zoom in. A large rectangle zooms less. A small rectangle zooms more. To reverse zoom, hold CTRL." />
+              <Tool Name="ZoomOut" DisplayName="Zoom Out" DrawMode="Rectangle" Command="ZoomOutToExtent" ImageUri="/Resources/Images/ZoomOut.png" ToolTip="Zoom out" HelpText="Drag a rectangle or click the map to zoom out. A large rectangle zooms less. A small rectangle zooms more. To reverse zoom, hold CTRL." />
+              <Button Name="Initial Extent" Command="ZoomToInitialExtent" ImageUri="/Resources/Images/ZoomInitial.png" ToolTip="Zoom to initial extent" />
+              <Button Name="Full Extent" Command="ZoomToFullExtent" ImageUri="/Resources/Images/ZoomFullExtent.png" ToolTip="Zoom to full extent" />
+              <Button Name="Previous Extent" Command="ZoomToPreviousExtent" ImageUri="/Resources/Images/ExtentPrevious.png" ToolTip="Zoom to previous extent" />
+              <Button Name="Next Extent" Command="ZoomToNextExtent" ImageUri="/Resources/Images/ExtentNext.png" ToolTip="Zoom to next extent" />
+            </Group>
+            <Group DisplayName="Location Info">
+              <Tool Name="PointIdentify" DisplayName="Point Identify" ToolTip="Identify (Point)" DrawMode="Point" Command="Identify" ImageUri="/Resources/Images/Identify.png" HelpText="Click on the map to identify features at that point. Select from the Layers drop-down list to change which layers display."/>
+            </Group>
+            <Group DisplayName="Information &amp; Actions">
+              <Region RegionName="AdvancedControlsRegion" />
+            </Group>
+            <Group DisplayName="Help">
+              <Button Name="LaunchDefaultHelp" DisplayName="Help" Command="ShowHelpTopic" CommandParameter="" ImageUri="/Resources/Images/Help.png" ToolTip="Show help topics" />
+              <Button Name="ClickForHelp" DisplayName="What's This?" Command="InvokeClickHelp" ImageUri="/Resources/Images/HelpClickCursor.png" ToolTip="Enable click help" />
+            </Group>
+          </Tab>
+          <Tab DisplayName="Maps &amp; Data Sources">
+            <Group DisplayName="Map Layers">
+              <Button Name="Show Layers" Command="SwitchToLayerView" ImageUri="/Resources/Images/Layers.png" ToolTip="Show layer list" />
+            </Group>
+            <Group DisplayName="Map Tips">
+              <Region RegionName="MapTipsRegion" />
+            </Group>
+            <Group DisplayName="Add Data">
+              <Button Name="Add Map Layer" Command="AddMapLayerInteractive" ImageUri="/Resources/Images/LayersAdd.png" ToolTip="Add external map layer" />
+              <Button DisplayName="Add Shapefile" Command="OpenShapefileDialog" ImageUri="/Resources/Images/FileSHP.png" ToolTip="Open a shapefile and add it to the map" />
+              <Button DisplayName="Add CSV file" Command="OpenCsvDialog" ImageUri="/Resources/Images/FileCSV.png" ToolTip="Open a CSV file and add it to the map" />
+            </Group>
+            <Group DisplayName="External Mapping">
+              <Button DisplayName="Bing™ Maps" Command="OpenWebPage" CommandParameter="../WMI/BingMaps.html" ImageUri="/Resources/Images/MapBlue.png" ToolTip="View the current location in Bing Maps / Birdseye" />
+              <Button DisplayName="Google Maps™" Command="OpenWebPage" CommandParameter="../WMI/GoogleMaps.html" ImageUri="/Resources/Images/MapGreen.png" ToolTip="View the current location in Google Maps / Street View" />
+            </Group>
+            {Insert__Toolbar-MapsAndDataSources-Groups}
+          </Tab>
+          <Tab DisplayName="Tasks">
+            <Group DisplayName="Printing">
+              <Button Name="Print Map" Command="PrintMap" ImageUri="/Resources/Images/Print.png" ToolTip="Print a map" />
+            </Group>
+            <Group DisplayName="Reports">
+              <Button Name="Reports" Module="Reporting" Command="RunReport" ImageUri="/Resources/Images/Reports.png" ToolTip="Create a report"/>
+            </Group>
+            <Group DisplayName="Export Tools">
+              <Button Name="Export Map" Command="ShowExportMapDialog" ImageUri="/Resources/Images/ExportMapImage.png" ToolTip="Export a map image" />
+            </Group>
+            <Group DisplayName="Results">
+              <Button Name="View Results" Command="SwitchToResultsView" ImageUri="/Resources/Images/SearchResults32x32.png" ToolTip="View recent search results" />
+              <Button Name="View Selected" Command="SwitchToSelectionView" ImageUri="/Resources/Images/Star32x32.png" ToolTip="View selected features" />
+            </Group>
+            <Group DisplayName="Drawing Tools">
+              <Region RegionName="DrawingToolsRegion" />
+            </Group>
+            {Insert__Toolbar-Tasks-Groups}
+          </Tab>
+          <Tab DisplayName="Analysis">
+            <Group DisplayName="Location Information">
+              <Region RegionName="IdentifyRegion" />
+            </Group>
+            <Group DisplayName="Measurement Tools">
+              <Region RegionName="MeasurementToolsRegion" />
+            </Group>
+            <Group DisplayName="Coordinate Tools">
+              <Region RegionName="CoordinateToolsRegion" />
+            </Group>
+          </Tab>
+          {Insert__Toolbar-Tabs}
+        </Toolbar>
+      </Configuration>
+    </Toolbar>
+
+    <UrlIntegration>
+      <Configuration>
+        <Macros>
+          <Macro Name="extent" WaitsFor="Map" Module="Map" AssemblyHint="CoreModules" />
+          <Macro Name="fullscreen" WaitsFor="Shell" Module="Shell" AssemblyHint="CoreModules" />
+          <Macro Name="hide" WaitsFor="Map" Module="Map" AssemblyHint="CoreModules" />
+          <Macro Name="identify" WaitsFor="Map" Module="Identify" AssemblyHint="CoreModules" />
+          <Macro Name="layerTheme" WaitsFor="Map" Module="Map" AssemblyHint="CoreModules" />
+          <Macro Name="layers" WaitsFor="Map" Module="LayerList" AssemblyHint="CoreModules" />
+          <Macro Name="proj" WaitsFor="Measurement" Module="Measurement" AssemblyHint="CoreModules" />
+          <Macro Name="showAdvancedTools" WaitsFor="Shell" Module="Shell" AssemblyHint="CoreModules" />
+          <Macro Name="showDataFrame" WaitsFor="Shell" Module="Shell" AssemblyHint="CoreModules" />
+          <Macro Name="showOverviewMap" WaitsFor="Map" Module="OverviewMap" AssemblyHint="CoreModules" />
+          <Macro Name="attributeSearch" WaitsFor="Map" Module="GlobalSearch" AssemblyHint="CoreModules" />
+        </Macros>
+      </Configuration>
+    </UrlIntegration>
+
+    <UserLayerAddition>
+      <Configuration>
+        <ArcGIS>
+          <Search Location="http://sampleserver1.arcgisonline.com/ArcGIS/rest/services" />
+          <Search Service="ArcGISOnline" />
+          <Template Location="{0}" />
+          <Template Location="http://{0}/ArcGIS/rest/services" />
+          <Template Location="https://{0}/ArcGIS/rest/services" />
+        </ArcGIS>
+      </Configuration>
+    </UserLayerAddition>
+    
+    <WebMapIntegration />
+
+    <Workflow>
+      <Configuration>
+        <RunAtStartup>
+          <!--<Workflow Id="YourWorkflowId" />-->
+        </RunAtStartup>
+        <WorkflowContainers DefaultTitle="Workflow" DefaultRegion="DataRegion" DefaultIconUri="/Resources/Images/Form.png">
+          <WorkflowContainer Name="Default" Title="Workflow" RegionName="DataRegion" IconUri="/Resources/Images/Form.png"/>
+          <WorkflowContainer Name="Extract" Title="Extract Data" RegionName="DataRegion" IconUri="/Resources/Images/LayersExtract.png"/>
+          <WorkflowContainer Name="ModalWindow" Title="Workflow" RegionName="ModalWindowRegion"/>
+        </WorkflowContainers>
+      </Configuration>
+    </Workflow>
+    
+  </Modules>
+  
+</Configuration> 
